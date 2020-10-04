@@ -89,9 +89,10 @@ func initData() {
 // @contact.email dermicha@dermicha.de
 // @license.name GNU GENERAL PUBLIC LICENSE Version 3.0
 // @license.url https://www.gnu.org/licenses/
-// @host http://mqtt.pantra.eu
+// @host mqtt.pantra.eu
 // @BasePath /pantraserver/api
 func main() {
+
 	log.Println("Welcome!")
 	config := configUtil.GetConfig()
 	database.InitDatabase(config.DbPath)
