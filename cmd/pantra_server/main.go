@@ -50,7 +50,7 @@ func setupRoutes(app *fiber.App) {
 // @Produce text/plain
 // @Param offset path int true "an index in days beginning with today, vaild from today up to 13 backwards (0-13)"
 // @Param page path int true "selects the batch of ExposureKeys for selected day, 0-n, return HTTP Status 404 if no more keys are available"
-// @Param size path int false "defines amount of ExposureKeys per request, default is 10"
+// @Param size path int false "defines amount of ExposureKeys per request, default is 10" default(10)
 // @Success 200 {string} string
 // @Failure 404 {String} string
 // @Router /v1/expkey/{offset}/{page}/{size} [get]
@@ -67,7 +67,7 @@ func GetExpKeysByOffset(c *fiber.Ctx) error {
 // @Produce text/plain
 // @Param date path string true "day as yyyymmdd for which ExposureKeys are requested, vaild from today up to 13 backwards (UTC based)"
 // @Param page path int true "selects the batch of ExposureKeys for selected day, 0-n, return HTTP Status 404 if no more keys are available"
-// @Param size path int false "defines amount of ExposureKeys per request, default is 10"
+// @Param size path int false "defines amount of ExposureKeys per request, default is 10" default(10)
 // @Success 200 {string} string
 // @Failure 404 {string} string
 // @Router /v1/expkey/bydate/{date}/{page}/{size} [get]
