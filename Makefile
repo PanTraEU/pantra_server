@@ -30,8 +30,12 @@ test:
 	cd pkg/pantra_server/model/expkey && go test -v
 	cd pkg/pantra_server/expkeyservice && go test -v
 
+gitupdate:
+	git pull
+
 clean:
 	rm -f bin/*
 	rm -f cmd/pantra_server/docs/*
 
 
+refreshrun: clean gitupdate build runbin
