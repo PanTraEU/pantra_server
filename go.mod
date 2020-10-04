@@ -11,6 +11,7 @@ require (
 	github.com/go-openapi/swag v0.19.9 // indirect
 	github.com/gofiber/fiber/v2 v2.0.5
 	github.com/mailru/easyjson v0.7.6 // indirect
+	github.com/robfig/cron/v3 v3.0.0
 	github.com/sirupsen/logrus v1.7.0
 	github.com/stretchr/testify v1.6.1
 	github.com/swaggo/swag v1.6.7

@@ -5,17 +5,29 @@ import (
 	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/dermicha/goutils/database"
 	"github.com/gofiber/fiber/v2"
-	utils2 "github.com/gofiber/fiber/v2/utils"
 	_ "github.com/pantraeu/pantra_server/cmd/pantra_server/docs"
 	configUtil "github.com/pantraeu/pantra_server/pkg/pantra_server/confutil"
 	"github.com/pantraeu/pantra_server/pkg/pantra_server/expkeyservice"
 	expkey "github.com/pantraeu/pantra_server/pkg/pantra_server/model/expkey"
+	"github.com/pantraeu/pantra_server/pkg/pantra_server/updaterservice"
+	"github.com/robfig/cron/v3"
 	log "github.com/sirupsen/logrus"
-	"time"
 )
+
+var (
+	appName    = "PanTra Server"
+	appVersion = "v0.0.1"
+)
+
+func aboutService(c *fiber.Ctx) error {
+	c.SendString(fmt.Sprintf("%s %s", appName, appVersion))
+	return nil
+}
 
 func setupRoutes(app *fiber.App) {
 	log.Println("setupRoutes")
+
+	app.Get("/", aboutService)
 
 	app.Use("/swagger", swagger.Handler)
 
@@ -63,24 +75,6 @@ func GetExpKeysByDate(c *fiber.Ctx) error {
 	return expkeyservice.GetExpKeysByDate(c)
 }
 
-func initData() {
-	expKeys, _ := expkey.GetAllExpKeys()
-	if len(expKeys) == 0 {
-		for i := 0; i < 14; i++ { // start of the execution block
-			today := time.Now().UTC()
-			for j := 0; j < 100; j++ { // start of the execution block
-				dur, _ := time.ParseDuration(fmt.Sprintf("-%dh", (i * 24)))
-				currentDay := today.Add(dur)
-				log.Info(currentDay)
-				ek := new(expkey.ExpKey)
-				ek.ExpKey = utils2.UUID()
-				ek.Day = currentDay.Format("2006-01-02")
-				expkey.StoreExpKey(ek)
-			}
-		}
-	}
-}
-
 // @title PanTra Server API
 // @version 0.1
 // @description Swagger API docs
@@ -98,7 +92,10 @@ func main() {
 	database.InitDatabase(config.DbPath)
 	database.MigrateDatabase(&expkey.ExpKey{})
 
-	initData()
+	updaterservice.UpdateExpKeys()
+	c := cron.New()
+	c.AddFunc("5 2 * * *", updaterservice.UpdateExpKeys)
+	c.Start()
 
 	app := fiber.New()
 	setupRoutes(app)
