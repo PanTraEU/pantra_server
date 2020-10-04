@@ -8,6 +8,9 @@ all: pantraserver
 
 pantraserver:
 	cd cmd/pantra_server && go build
+	mkdir -p ./bin
+	mv cmd/pantra_server/pantra_server ./bin
+	chmod 755 bin/pantra_server
 
 .PHONY:
 	clean test
@@ -16,7 +19,7 @@ run:
 	go run cmd/pantra_server/main.go
 
 runbin: pantraserver
-	cmd/pantra_server/pantra_server
+	./bin/pantra_server
 
 test:
 	cd pkg/pantra_server/model/expkey && go test -v
