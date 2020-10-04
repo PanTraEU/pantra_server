@@ -9,6 +9,7 @@ import (
 )
 
 func UpdateExpKeys() {
+	log.Info("check for missing keys")
 	for i := 0; i < 14; i++ { // start of the execution block
 		today := time.Now().UTC()
 		dur, _ := time.ParseDuration(fmt.Sprintf("-%dh", (i * 24)))
@@ -22,7 +23,10 @@ func UpdateExpKeys() {
 				ek := new(expkey.ExpKey)
 				ek.ExpKey = utils2.UUID()
 				ek.Day = cDayStr
-				expkey.StoreExpKey(ek)
+				err := expkey.StoreExpKey(ek)
+				if err != nil {
+					log.Panic("ExpKey could not be stored: ", err.Error())
+				}
 			}
 		}
 	}

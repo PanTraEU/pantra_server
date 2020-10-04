@@ -20,8 +20,8 @@ var (
 )
 
 func aboutService(c *fiber.Ctx) error {
-	c.SendString(fmt.Sprintf("%s %s", appName, appVersion))
-	return nil
+	err := c.SendString(fmt.Sprintf("%s %s", appName, appVersion))
+	return err
 }
 
 func setupRoutes(app *fiber.App) {
@@ -87,21 +87,30 @@ func GetExpKeysByDate(c *fiber.Ctx) error {
 // @BasePath /pantraserver/api
 func main() {
 
-	log.Println("Welcome!")
+	log.SetFormatter(&log.TextFormatter{
+		DisableColors: false,
+		FullTimestamp: true,
+	})
+	log.SetLevel(log.DebugLevel)
+
+	log.Info("Welcome!")
 	config := configUtil.GetConfig()
 	database.InitDatabase(config.DbPath)
 	database.MigrateDatabase(&expkey.ExpKey{})
 
 	updaterservice.UpdateExpKeys()
 	c := cron.New()
-	c.AddFunc("5 2 * * *", updaterservice.UpdateExpKeys)
+	_, err := c.AddFunc("@hourly", updaterservice.UpdateExpKeys)
+	if err != nil {
+		log.Panic("cron setup fails", err.Error())
+	}
 	c.Start()
 
 	app := fiber.New()
 	setupRoutes(app)
 
 	//defer database.DBConn.Close()
-	err := app.Listen(":3000")
+	err = app.Listen(":3000")
 	if err != nil {
 		log.Error("could not start server: ", err.Error())
 	}
