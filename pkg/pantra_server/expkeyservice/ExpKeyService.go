@@ -5,9 +5,10 @@ import (
 	"github.com/gofiber/fiber/v2"
 	expkey "github.com/pantraeu/pantra_server/pkg/pantra_server/model/expkey"
 	"strconv"
+	"time"
 )
 
-func GetExpKeys(c *fiber.Ctx) error {
+func GetExpKeysByOffset(c *fiber.Ctx) error {
 	offset, err := strconv.Atoi(c.Params("offset", "0"))
 
 	if err != nil {
@@ -24,19 +25,62 @@ func GetExpKeys(c *fiber.Ctx) error {
 		return err
 	}
 
-	expKeys, err := expkey.GetExpKeys(offset, page, size)
+	expKeys, err := expkey.GetExpKeysByOffset(offset, page, size)
 	if err != nil {
 		return err
 	}
 
-	restKeys := []expkey.ExpKeyRest{}
-	for _, eKey := range expKeys {
-		rKey := new(expkey.ExpKeyRest)
-		rKey.Day = eKey.Day
-		rKey.ExpKey = eKey.ExpKey
-		restKeys = append(restKeys, *rKey)
+	if len(expKeys) == 0 {
+		c.SendStatus(404)
+	} else {
+		restKeys := []expkey.ExpKeyRest{}
+		for _, eKey := range expKeys {
+			rKey := new(expkey.ExpKeyRest)
+			rKey.Day = eKey.Day
+			rKey.ExpKey = eKey.ExpKey
+			restKeys = append(restKeys, *rKey)
+		}
+		c.SendString(createCSV(restKeys))
 	}
-	c.SendString(createCSV(restKeys))
+	return nil
+}
+
+func GetExpKeysByDate(c *fiber.Ctx) error {
+	today := time.Now().UTC()
+	currentDay := today.Format("2006-01-02")
+
+	dateStr := c.Params("date", currentDay)
+	if len(dateStr) != 8 {
+		return fmt.Errorf("invalid date (yyyymmdd): ", dateStr)
+	}
+
+	page, err := strconv.Atoi(c.Params("page", "0"))
+	if err != nil {
+		return err
+	}
+
+	size, err := strconv.Atoi(c.Params("size", "10"))
+	if err != nil {
+		return err
+	}
+
+	expKeys, err := expkey.GetExpKeysByDate(dateStr, page, size)
+	if err != nil {
+		return err
+	}
+
+	if len(expKeys) == 0 {
+		c.SendStatus(404)
+	} else {
+		restKeys := []expkey.ExpKeyRest{}
+		for _, eKey := range expKeys {
+			rKey := new(expkey.ExpKeyRest)
+			rKey.Day = eKey.Day
+			rKey.ExpKey = eKey.ExpKey
+			restKeys = append(restKeys, *rKey)
+		}
+		c.SendString(createCSV(restKeys))
+	}
 	return nil
 }
 

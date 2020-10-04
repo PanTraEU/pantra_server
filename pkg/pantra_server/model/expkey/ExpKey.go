@@ -25,7 +25,7 @@ func GetAllExpKeys() ([]ExpKey, error) {
 	return expKeys, nil
 }
 
-func GetExpKeys(offset int, page int, size int) ([]ExpKey, error) {
+func GetExpKeysByOffset(offset int, page int, size int) ([]ExpKey, error) {
 	if offset <= 13 && offset >= 0 {
 		if page >= 0 {
 
@@ -47,6 +47,27 @@ func GetExpKeys(offset int, page int, size int) ([]ExpKey, error) {
 		}
 	} else {
 		return nil, fmt.Errorf("invalid offset (0-13): %d", offset)
+	}
+}
+
+func GetExpKeysByDate(dateStr string, page int, size int) ([]ExpKey, error) {
+	if page >= 0 {
+
+		dbCon := database.GetDb()
+		date, err := time.Parse("20060102", dateStr)
+		if err != nil {
+			return nil, fmt.Errorf("invalid date: %s", dateStr)
+		}
+		currentDay := date.Format("2006-01-02")
+		var expKeys []ExpKey
+		dbCon.
+			Limit(size).
+			Offset(page*size).
+			Where("Day = ?", currentDay).
+			Find(&expKeys)
+		return expKeys, nil
+	} else {
+		return nil, fmt.Errorf("invalid page (>= 0): %d", page)
 	}
 }
 

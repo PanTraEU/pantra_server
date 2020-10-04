@@ -8,11 +8,14 @@ all: pantraserver
 
 pantraserver: build
 
-build:
+build: builddocs
 	cd cmd/pantra_server && go build
 	mkdir -p ./bin
 	mv cmd/pantra_server/pantra_server ./bin
 	chmod 755 bin/pantra_server
+
+builddocs:
+	cd cmd/pantra_server && swag init
 
 .PHONY:
 	clean test
@@ -29,5 +32,6 @@ test:
 
 clean:
 	rm -f bin/*
+	rm -f cmd/pantra_server/docs/*
 
 
