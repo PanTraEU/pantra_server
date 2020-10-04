@@ -6,7 +6,9 @@
 
 all: pantraserver
 
-pantraserver:
+pantraserver: build
+
+build:
 	cd cmd/pantra_server && go build
 	mkdir -p ./bin
 	mv cmd/pantra_server/pantra_server ./bin
@@ -18,7 +20,7 @@ pantraserver:
 run:
 	go run cmd/pantra_server/main.go
 
-runbin: pantraserver
+runbin:
 	./bin/pantra_server
 
 test:
@@ -26,6 +28,6 @@ test:
 	cd pkg/pantra_server/expkeyservice && go test -v
 
 clean:
-	rm -f cmd/b3scaled/b3scaled
-	rm -f cmd/b3scalectl/b3scalectl
+	rm -f bin/*
+
 
