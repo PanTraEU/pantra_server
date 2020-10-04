@@ -18,13 +18,6 @@ type ExpKeyRest struct {
 	ExpKey string `json:"exp_key"`
 }
 
-func GetAllExpKeys() ([]ExpKey, error) {
-	dbCon := database.GetDb()
-	var expKeys []ExpKey
-	dbCon.Find(&expKeys)
-	return expKeys, nil
-}
-
 func GetExpKeysByOffset(offset int, page int, size int) ([]ExpKey, error) {
 	if offset <= 13 && offset >= 0 {
 		if page >= 0 {
@@ -40,6 +33,7 @@ func GetExpKeysByOffset(offset int, page int, size int) ([]ExpKey, error) {
 				Limit(size).
 				Offset(page*size).
 				Where("Day = ?", currentDay).
+				Order("exp_key asc").
 				Find(&expKeys)
 			return expKeys, nil
 		} else {
@@ -64,6 +58,7 @@ func GetExpKeysByDate(dateStr string, page int, size int) ([]ExpKey, error) {
 			Limit(size).
 			Offset(page*size).
 			Where("Day = ?", currentDay).
+			Order("exp_key asc").
 			Find(&expKeys)
 		return expKeys, nil
 	} else {
@@ -76,3 +71,10 @@ func StoreExpKey(expkey *ExpKey) error {
 	dbCon.Create(&expkey)
 	return nil
 }
+
+//func GetAllExpKeys() ([]ExpKey, error) {
+//	dbCon := database.GetDb()
+//	var expKeys []ExpKey
+//	dbCon.Find(&expKeys)
+//	return expKeys, nil
+//}
