@@ -15,6 +15,9 @@ pantraserver:
 run:
 	go run cmd/pantra_server/main.go
 
+runbin: pantraserver
+	cmd/pantra_server/pantra_server
+
 test:
 	cd pkg/pantra_server/model/expkey && go test -v
 	cd pkg/pantra_server/expkeyservice && go test -v
