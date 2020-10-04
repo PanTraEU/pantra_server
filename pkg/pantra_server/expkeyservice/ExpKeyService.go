@@ -40,7 +40,7 @@ func GetExpKeysByOffset(c *fiber.Ctx) error {
 			rKey.ExpKey = eKey.ExpKey
 			restKeys = append(restKeys, *rKey)
 		}
-		c.SendString(createCSV(restKeys))
+		c.SendString(createCSV(restKeys, true))
 	}
 	return nil
 }
@@ -79,17 +79,21 @@ func GetExpKeysByDate(c *fiber.Ctx) error {
 			rKey.ExpKey = eKey.ExpKey
 			restKeys = append(restKeys, *rKey)
 		}
-		c.SendString(createCSV(restKeys))
+		c.SendString(createCSV(restKeys, false))
 	}
 	return nil
 }
 
-func createCSV(restKeys []expkey.ExpKeyRest) string {
+func createCSV(restKeys []expkey.ExpKeyRest, withDate bool) string {
 	resultCSV := ""
 	for _, eKey := range restKeys {
 		day := eKey.Day
 		key := eKey.ExpKey
-		resultCSV = fmt.Sprintf("%s%s,%s\n", resultCSV, day, key)
+		if withDate {
+			resultCSV = fmt.Sprintf("%s%s,%s\n", resultCSV, day, key)
+		} else {
+			resultCSV = fmt.Sprintf("%s%s\n", resultCSV, key)
+		}
 	}
 	return resultCSV
 }
