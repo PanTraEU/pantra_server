@@ -1,3 +1,4 @@
 {
-  "db_path": "./pantra_server"
+  "db_path": "./pantra_server",
+  "data_path": "./data"
 }

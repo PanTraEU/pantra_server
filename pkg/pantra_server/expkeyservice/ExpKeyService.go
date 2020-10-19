@@ -77,6 +77,9 @@ func GetExpKeysByDate(c *fiber.Ctx) error {
 			rKey := new(expkey.ExpKeyRest)
 			rKey.Day = eKey.Day
 			rKey.ExpKey = eKey.ExpKey
+			rKey.RollingStartIntervalNumber = eKey.RollingStartIntervalNumber
+			rKey.RollingPeriod = eKey.RollingPeriod
+			rKey.DaysSinceOnsetOfSymptoms = eKey.DaysSinceOnsetOfSymptoms
 			restKeys = append(restKeys, *rKey)
 		}
 		c.SendString(createCSV(restKeys, false))
@@ -89,47 +92,15 @@ func createCSV(restKeys []expkey.ExpKeyRest, withDate bool) string {
 	for _, eKey := range restKeys {
 		day := eKey.Day
 		key := eKey.ExpKey
+		rollStart := eKey.RollingStartIntervalNumber
+		rollPer := eKey.RollingPeriod
+		days := eKey.DaysSinceOnsetOfSymptoms
+		line := fmt.Sprintf("%s,%d,%d,%d", key, rollStart, rollPer, days)
 		if withDate {
-			resultCSV = fmt.Sprintf("%s%s,%s\n", resultCSV, day, key)
+			resultCSV = fmt.Sprintf("%s%s,%s\n", resultCSV, day, line)
 		} else {
-			resultCSV = fmt.Sprintf("%s%s\n", resultCSV, key)
+			resultCSV = fmt.Sprintf("%s%s\n", resultCSV, line)
 		}
 	}
 	return resultCSV
 }
-
-//func GetExpKey(c *fiber.Ctx) {
-//	id := c.Params("id")
-//	dbCon := database.GetDb()
-//	var expKey expkey.ExpKey
-//	dbCon.Find(&expKey, id)
-//	c.JSON(expKey)
-//}
-//
-//func NewExpKey(c *fiber.Ctx) error {
-//	dbCon := database.GetDb()
-//	expKey := new(expkey.ExpKey)
-//	if err := c.BodyParser(expKey); err != nil {
-//		c.Status(503).SendString(err.Error())
-//		return fmt.Errorf("invalid json")
-//	}
-//
-//	dbCon.Create(&expKey)
-//	c.JSON(expKey)
-//	return nil
-//}
-//
-//func DeleteExpKey(c *fiber.Ctx) error {
-//	id := c.Params("id")
-//	dbCon := database.GetDb()
-//
-//	var expKey expkey.ExpKey
-//	dbCon.First(&expKey, id)
-//	if expKey.ExpKey == "" {
-//		c.Status(500).SendString("No ExpKey Found with ID")
-//		return fmt.Errorf("ExpKey not found with id: %d", id)
-//	}
-//	dbCon.Delete(&expKey)
-//	c.SendString("ExpKey Successfully deleted")
-//	return nil
-//}

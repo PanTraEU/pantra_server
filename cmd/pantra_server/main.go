@@ -99,6 +99,7 @@ func main() {
 	database.MigrateDatabase(&expkey.ExpKey{})
 
 	updaterservice.UpdateExpKeys()
+
 	c := cron.New()
 	_, err := c.AddFunc("@hourly", updaterservice.UpdateExpKeys)
 	if err != nil {

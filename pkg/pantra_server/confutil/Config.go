@@ -16,7 +16,8 @@ var (
 )
 
 type Configuration struct {
-	DbPath string `json:"db_path"`
+	DbPath   string `json:"db_path"`
+	DataPath string `json:"data_path"`
 }
 
 func getConfFile() (string, error) {

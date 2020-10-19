@@ -9,13 +9,21 @@ import (
 
 type ExpKey struct {
 	gorm.Model
-	Day    string `gorm:"column:day"`
-	ExpKey string `gorm:"column:exp_key" gorm:"uniqueIndex"`
+	Day                        string `gorm:"column:day"`
+	ExpKey                     string `gorm:"column:exp_key" gorm:"uniqueIndex"`
+	RollingStartIntervalNumber int32  `gorm:"column:interval_number"`
+	RollingPeriod              int32  `gorm:"column:rolling_period"`
+	DaysSinceOnsetOfSymptoms   int32  `gorm:"column:days_since"`
+	//TransmissionRiskLevel      int32  `gorm:"column:transmission_risk_level"`
 }
 
 type ExpKeyRest struct {
-	Day    string `json:"day"`
-	ExpKey string `json:"exp_key"`
+	Day                        string `json:"day"`
+	ExpKey                     string `json:"exp_key"`
+	RollingStartIntervalNumber int32  `json:"rolling_start_interval_number"`
+	RollingPeriod              int32  `json:"rolling_period"`
+	DaysSinceOnsetOfSymptoms   int32  `json:"days_since_onset_of_symptoms"`
+	//TransmissionRiskLevel      int32  `gorm:"column:transmission_risk_level"`
 }
 
 func GetExpKeysByOffset(offset int, page int, size int) ([]ExpKey, error) {
@@ -71,10 +79,3 @@ func StoreExpKey(expkey *ExpKey) error {
 	dbCon.Create(&expkey)
 	return nil
 }
-
-//func GetAllExpKeys() ([]ExpKey, error) {
-//	dbCon := database.GetDb()
-//	var expKeys []ExpKey
-//	dbCon.Find(&expKeys)
-//	return expKeys, nil
-//}

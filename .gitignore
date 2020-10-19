@@ -92,3 +92,4 @@ fabric.properties
 **.db
 bin/**
 cmd/pantra_server/docs/**
+data/**
