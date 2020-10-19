@@ -98,6 +98,8 @@ func main() {
 	database.InitDatabase(config.DbPath)
 	database.MigrateDatabase(&expkey.ExpKey{})
 
+	database.GetDb().Exec("pragma main.journal_mode=MEMORY;\npragma main.TEMP_STORE=2;\npragma main.cache_size=-4000;\npragma main.SYNCHRONOUS=1;\npragma main.LOCKING_MODE=NORMAL;")
+
 	updaterservice.UpdateExpKeys()
 
 	c := cron.New()
