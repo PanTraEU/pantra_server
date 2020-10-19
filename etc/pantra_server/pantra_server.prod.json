@@ -1,4 +1,4 @@
 {
   "db_path": "./pantra_server",
-  "data_path": "./data"
+  "data_path": "/home/user/cwa"
 }
