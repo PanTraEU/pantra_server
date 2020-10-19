@@ -9,9 +9,9 @@ import (
 
 var (
 	confFiles = []string{
-		"./pantra_server.json",
-		"./etc/pantra_server/pantra_server.json",
 		"/etc/pantra_server/pantra_server.json",
+		"./etc/pantra_server/pantra_server.json",
+		"./pantra_server.json",
 	}
 )
 
