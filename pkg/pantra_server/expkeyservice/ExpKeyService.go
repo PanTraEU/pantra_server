@@ -6,9 +6,18 @@ import (
 	"github.com/gofiber/fiber/v2"
 	expkey "github.com/pantraeu/pantra_server/pkg/pantra_server/model/expkey"
 	log "github.com/sirupsen/logrus"
+	"reflect"
 	"strconv"
 	"time"
+	"unsafe"
 )
+
+const BYTES_IN_INT32 = 4
+
+func unsafeCaseInt32ToBytes(val int32) []byte {
+	hdr := reflect.SliceHeader{Data: uintptr(unsafe.Pointer(&val)), Len: BYTES_IN_INT32, Cap: BYTES_IN_INT32}
+	return *(*[]byte)(unsafe.Pointer(&hdr))
+}
 
 func GetExpKeysByOffset(c *fiber.Ctx) error {
 	offset, err := strconv.Atoi(c.Params("offset", "0"))
@@ -100,12 +109,13 @@ func GetExpKeysByDate(c *fiber.Ctx, bindata bool) error {
 				if err == nil {
 					byteData = append(byteData, dk...)
 				}
-				b := byte(k.RollingStartIntervalNumber)
-				byteData = append(byteData, b)
-				b = byte(k.RollingPeriod)
-				byteData = append(byteData, b)
-				b = byte(k.DaysSinceOnsetOfSymptoms)
-				byteData = append(byteData, b)
+				b := make([]byte, 4)
+				b = unsafeCaseInt32ToBytes(k.RollingStartIntervalNumber)
+				byteData = append(byteData, b...)
+				b = unsafeCaseInt32ToBytes(k.RollingPeriod)
+				byteData = append(byteData, b...)
+				b = unsafeCaseInt32ToBytes(k.DaysSinceOnsetOfSymptoms)
+				byteData = append(byteData, b...)
 			}
 			err := c.Send(byteData)
 			if err != nil {
