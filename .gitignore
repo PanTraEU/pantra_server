@@ -93,3 +93,4 @@ fabric.properties
 bin/**
 cmd/pantra_server/docs/**
 data/**
+**.log
