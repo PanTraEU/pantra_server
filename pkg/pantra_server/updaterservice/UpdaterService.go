@@ -1,7 +1,7 @@
 package updaterservice
 
 import (
-	"encoding/hex"
+	"encoding/base64"
 	"fmt"
 	utils2 "github.com/gofiber/fiber/v2/utils"
 	configUtil "github.com/pantraeu/pantra_server/pkg/pantra_server/confutil"
@@ -52,7 +52,7 @@ func UpdateExpKeys() {
 			log.Infof("add %d keys for day: %s", len(keys.Keys), cDayStr)
 			expKeys := make([]expkey.ExpKey, 0)
 			for _, k := range keys.Keys {
-				hexKey := hex.EncodeToString(k.KeyData)
+				hexKey := base64.StdEncoding.EncodeToString(k.KeyData)
 				rollStart := k.RollingStartIntervalNumber
 				rollPer := k.RollingPeriod
 				days := k.DaysSinceOnsetOfSymptoms
