@@ -50,6 +50,7 @@ func UpdateExpKeys() {
 		curKeys, err := expkey.GetExpKeysByDate(cDayShortStr, 0, 10)
 		if err != nil || len(curKeys) == 0 {
 			log.Infof("add %d keys for day: %s", len(keys.Keys), cDayStr)
+			var expKeys []expkey.ExpKey
 			for _, k := range keys.Keys {
 				hexKey := hex.EncodeToString(k.KeyData)
 				rollStart := k.RollingStartIntervalNumber
@@ -73,10 +74,11 @@ func UpdateExpKeys() {
 				} else {
 					ek.DaysSinceOnsetOfSymptoms = 0
 				}
-				err := expkey.StoreExpKey(ek)
-				if err != nil {
-					log.Panic("ExpKey could not be stored: ", err.Error())
-				}
+				expKeys = append(expKeys, *ek)
+			}
+			err := expkey.StoreExpKeys(expKeys)
+			if err != nil {
+				log.Panic("ExpKey could not be stored: ", err.Error())
 			}
 		}
 	}

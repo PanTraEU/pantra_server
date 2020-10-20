@@ -79,3 +79,9 @@ func StoreExpKey(expkey *ExpKey) error {
 	dbCon.Create(&expkey)
 	return nil
 }
+
+func StoreExpKeys(expkey []ExpKey) error {
+	dbCon := database.GetDb()
+	dbCon.Create(expkey)
+	return nil
+}

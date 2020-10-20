@@ -98,7 +98,13 @@ func main() {
 	database.InitDatabase(config.DbPath)
 	database.MigrateDatabase(&expkey.ExpKey{})
 
-	database.GetDb().Exec("pragma main.journal_mode=MEMORY;\npragma main.TEMP_STORE=2;\npragma main.cache_size=-4000;\npragma main.SYNCHRONOUS=1;\npragma main.LOCKING_MODE=NORMAL;")
+	database.GetDb().Exec(
+		"pragma main.journal_mode=MEMORY;" +
+			"pragma main.TEMP_STORE=2;" +
+			"pragma main.cache_size=-4000;" +
+			"pragma main.SYNCHRONOUS=1;" +
+			"pragma main.LOCKING_MODE=EXCLUSIVE;",
+	)
 
 	updaterservice.UpdateExpKeys()
 
