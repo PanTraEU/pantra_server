@@ -1,9 +1,11 @@
 package expkeyservice
 
 import (
+	"encoding/base64"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	expkey "github.com/pantraeu/pantra_server/pkg/pantra_server/model/expkey"
+	log "github.com/sirupsen/logrus"
 	"strconv"
 	"time"
 )
@@ -31,7 +33,10 @@ func GetExpKeysByOffset(c *fiber.Ctx) error {
 	}
 
 	if len(expKeys) == 0 {
-		c.SendStatus(404)
+		err = c.SendStatus(404)
+		if err != nil {
+			log.Error(err)
+		}
 	} else {
 		restKeys := []expkey.ExpKeyRest{}
 		for _, eKey := range expKeys {
@@ -40,12 +45,15 @@ func GetExpKeysByOffset(c *fiber.Ctx) error {
 			rKey.ExpKey = eKey.ExpKey
 			restKeys = append(restKeys, *rKey)
 		}
-		c.SendString(createCSV(restKeys, true))
+		err := c.SendString(createCSV(restKeys, true))
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return nil
 }
 
-func GetExpKeysByDate(c *fiber.Ctx) error {
+func GetExpKeysByDate(c *fiber.Ctx, bindata bool) error {
 	today := time.Now().UTC()
 	currentDay := today.Format("2006-01-02")
 
@@ -70,7 +78,10 @@ func GetExpKeysByDate(c *fiber.Ctx) error {
 	}
 
 	if len(expKeys) == 0 {
-		c.SendStatus(404)
+		err := c.SendStatus(404)
+		if err != nil {
+			log.Error(err)
+		}
 	} else {
 		restKeys := []expkey.ExpKeyRest{}
 		for _, eKey := range expKeys {
@@ -82,7 +93,31 @@ func GetExpKeysByDate(c *fiber.Ctx) error {
 			rKey.DaysSinceOnsetOfSymptoms = eKey.DaysSinceOnsetOfSymptoms
 			restKeys = append(restKeys, *rKey)
 		}
-		c.SendString(createCSV(restKeys, false))
+		if bindata {
+			byteData := make([]byte, 0)
+			for _, k := range restKeys {
+				dk, err := base64.StdEncoding.DecodeString(k.ExpKey)
+				if err == nil {
+					byteData = append(byteData, dk...)
+				}
+				b := byte(k.RollingStartIntervalNumber)
+				byteData = append(byteData, b)
+				b = byte(k.RollingPeriod)
+				byteData = append(byteData, b)
+				b = byte(k.DaysSinceOnsetOfSymptoms)
+				byteData = append(byteData, b)
+			}
+			err := c.Send(byteData)
+			if err != nil {
+				log.Error(err)
+			}
+		} else {
+			err := c.SendString(createCSV(restKeys, false))
+			if err != nil {
+				log.Error(err)
+			}
+		}
+
 	}
 	return nil
 }

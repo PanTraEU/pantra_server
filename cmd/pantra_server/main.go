@@ -38,6 +38,9 @@ func setupRoutes(app *fiber.App) {
 	apiV1.Get("/expkey/bydate/:date/:page", GetExpKeysByDate)
 	apiV1.Get("/expkey/bydate/:date/:page/:size", GetExpKeysByDate)
 
+	apiV1.Get("/expkey/bin/bydate/:date/:page", GetExpKeysByDateBin)
+	apiV1.Get("/expkey/bin/bydate/:date/:page/:size", GetExpKeysByDateBin)
+
 	apiV1.Get("/expkey/:offset/:page", GetExpKeysByOffset)
 	apiV1.Get("/expkey/:offset/:page/:size", GetExpKeysByOffset)
 
@@ -74,7 +77,11 @@ func GetExpKeysByOffset(c *fiber.Ctx) error {
 // @Failure 404 {string} string
 // @Router /v1/expkey/bydate/{date}/{page}/{size} [get]
 func GetExpKeysByDate(c *fiber.Ctx) error {
-	return expkeyservice.GetExpKeysByDate(c)
+	return expkeyservice.GetExpKeysByDate(c, false)
+}
+
+func GetExpKeysByDateBin(c *fiber.Ctx) error {
+	return expkeyservice.GetExpKeysByDate(c, true)
 }
 
 // @title PanTra Server API
