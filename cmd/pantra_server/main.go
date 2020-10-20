@@ -103,20 +103,20 @@ func main() {
 		PrepareStmt:       false,
 		AllowGlobalUpdate: true,
 		//Logger: logger.,
-		Logger: logger.Default.LogMode(logger.Silent),
+		Logger: logger.Default.LogMode(logger.Warn),
 	}
 
 	database.InitDatabase(config.DbPath, &gConf)
 
 	database.MigrateDatabase(&expkey.ExpKey{})
 
-	database.GetDb().Exec(
-		"pragma main.journal_mode=MEMORY;" +
-			"pragma main.TEMP_STORE=2;" +
-			"pragma main.cache_size=-4000;" +
-			"pragma main.SYNCHRONOUS=1;" +
-			"pragma main.LOCKING_MODE=EXCLUSIVE;",
-	)
+	//database.GetDb().Exec(
+	//	"pragma main.journal_mode=MEMORY;" +
+	//		"pragma main.TEMP_STORE=2;" +
+	//		"pragma main.cache_size=-4000;" +
+	//		"pragma main.SYNCHRONOUS=1;" +
+	//		"pragma main.LOCKING_MODE=EXCLUSIVE;",
+	//)
 
 	updaterservice.UpdateExpKeys()
 

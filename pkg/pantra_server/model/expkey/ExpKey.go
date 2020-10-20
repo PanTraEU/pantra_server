@@ -80,8 +80,8 @@ func StoreExpKey(expkey *ExpKey) error {
 	return nil
 }
 
-func StoreExpKeys(expkey []ExpKey) error {
+func StoreExpKeys(expkey *[]ExpKey) error {
 	dbCon := database.GetDb()
-	dbCon.Create(expkey)
+	dbCon.Create(&expkey)
 	return nil
 }
