@@ -241,6 +241,8 @@ github.com/dermicha/goutils v0.0.3 h1:CjjB1KAeJhQ0YZjRE0jycG7BHBHTWeRQOMRJocH1W0
 github.com/dermicha/goutils v0.0.3/go.mod h1:xXuJ7GM/ytDy16YFerPpxfBTdGP/SOLVK2qqCO2djSA=
 github.com/dermicha/goutils v0.0.4 h1:TmWGI7Bkjwc72Ig+ZycxeM4qj2XB5b8oGKqu4KKGE5M=
 github.com/dermicha/goutils v0.0.4/go.mod h1:FPyc9qCgVg5Sctw3sRtWl0sDS3ByNa66xvoKcKpFPpw=
+github.com/dermicha/goutils v0.0.5 h1:+3R2WmgPJdFYa59yp8A8CmTSs2npZmKyCS1ro2scRo4=
+github.com/dermicha/goutils v0.0.5/go.mod h1:FPyc9qCgVg5Sctw3sRtWl0sDS3ByNa66xvoKcKpFPpw=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
 github.com/dgryski/go-sip13 v0.0.0-20181026042036-e10d5fee7954/go.mod h1:vAd38F8PWV+bWy6jNmig1y/TA+kYO4g3RSRF0IAv0no=
 github.com/dhui/dktest v0.3.2/go.mod h1:l1/ib23a/CmxAe7yixtrYPc8Iy90Zy2udyaHINM5p58=

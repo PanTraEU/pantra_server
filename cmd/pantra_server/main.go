@@ -12,6 +12,8 @@ import (
 	"github.com/pantraeu/pantra_server/pkg/pantra_server/updaterservice"
 	"github.com/robfig/cron/v3"
 	log "github.com/sirupsen/logrus"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var (
@@ -95,7 +97,17 @@ func main() {
 
 	log.Info("Welcome!")
 	config := configUtil.GetConfig()
-	database.InitDatabase(config.DbPath)
+
+	gConf := gorm.Config{
+		DryRun:            false,
+		PrepareStmt:       false,
+		AllowGlobalUpdate: true,
+		//Logger: logger.,
+		Logger: logger.Default.LogMode(logger.Silent),
+	}
+
+	database.InitDatabase(config.DbPath, &gConf)
+
 	database.MigrateDatabase(&expkey.ExpKey{})
 
 	database.GetDb().Exec(
