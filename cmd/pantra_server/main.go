@@ -110,7 +110,7 @@ func main() {
 		PrepareStmt:       false,
 		AllowGlobalUpdate: true,
 		//Logger: logger.,
-		Logger: logger.Default.LogMode(logger.Warn),
+		Logger: logger.Default.LogMode(logger.Error),
 	}
 
 	database_pg.InitDatabase(config.DbDSN, &gConf)
