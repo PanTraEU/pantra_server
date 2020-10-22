@@ -115,6 +115,8 @@ func main() {
 
 	database_pg.InitDatabase(config.DbDSN, &gConf)
 
+	database_pg.GetDb().Exec("set client_encoding to 'UTF8'")
+
 	database_pg.MigrateDatabase(&expkey.ExpKey{})
 
 	//database.GetDb().Exec(
