@@ -12,5 +12,11 @@
         </library>
       </libraries>
     </data-source>
+    <data-source source="LOCAL" name="pantra_server@localhost" uuid="a7038efe-46ff-47ca-a50d-0af48f574054">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5432/pantra_server</jdbc-url>
+    </data-source>
   </component>
 </project>

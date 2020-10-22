@@ -6,7 +6,7 @@ require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/arsmn/fiber-swagger/v2 v2.0.0
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
-	github.com/dermicha/goutils v0.0.5
+	github.com/dermicha/goutils v0.0.6
 	github.com/go-openapi/spec v0.19.9 // indirect
 	github.com/go-openapi/swag v0.19.9 // indirect
 	github.com/gofiber/fiber/v2 v2.0.5
@@ -22,6 +22,5 @@ require (
 	golang.org/x/tools v0.0.0-20201002184944-ecd9fd270d5d // indirect
 	google.golang.org/protobuf v1.25.0
 	gopkg.in/yaml.v2 v2.3.0 // indirect
-	gorm.io/driver/sqlite v1.1.1
-	gorm.io/gorm v1.20.0
+	gorm.io/gorm v1.20.5
 )

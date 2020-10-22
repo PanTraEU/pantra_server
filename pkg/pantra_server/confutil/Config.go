@@ -16,8 +16,10 @@ var (
 )
 
 type Configuration struct {
-	DbPath   string `json:"db_path"`
-	DataPath string `json:"data_path"`
+	DbPath          string `json:"db_path"`
+	DataPath        string `json:"data_path"`
+	DbDSN           string `json:"db_dsn"`
+	InsertBatchSize int    `json:"insert_batch_size"`
 }
 
 func getConfFile() (string, error) {
@@ -40,7 +42,6 @@ func GetConfig() Configuration {
 	}
 
 	file, ferr := os.Open(cFile)
-	defer file.Close()
 	if ferr != nil {
 		panic(ferr.Error())
 	}

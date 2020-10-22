@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	swagger "github.com/arsmn/fiber-swagger/v2"
-	"github.com/dermicha/goutils/database"
+	"github.com/dermicha/goutils/database_pg"
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/pantraeu/pantra_server/cmd/pantra_server/docs"
 	configUtil "github.com/pantraeu/pantra_server/pkg/pantra_server/confutil"
@@ -113,9 +113,9 @@ func main() {
 		Logger: logger.Default.LogMode(logger.Warn),
 	}
 
-	database.InitDatabase(config.DbPath, &gConf)
+	database_pg.InitDatabase(config.DbDSN, &gConf)
 
-	database.MigrateDatabase(&expkey.ExpKey{})
+	database_pg.MigrateDatabase(&expkey.ExpKey{})
 
 	//database.GetDb().Exec(
 	//	"pragma main.journal_mode=MEMORY;" +

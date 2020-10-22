@@ -1,18 +1,17 @@
 package expkey
 
 import (
-	database "github.com/dermicha/goutils/database"
+	database "github.com/dermicha/goutils/database_pg"
 	utils2 "github.com/gofiber/fiber/v2/utils"
 	log "github.com/sirupsen/logrus"
 	"strings"
 	"testing"
 )
 
-var (
-	testDbName = ":memory:"
-	//dbName     = "testdatabase"
-	//testDbName = fmt.Sprintf("%s_test", dbName)
-)
+func cleanUpDb() {
+	db := database.GetDb()
+	db.Exec("drop table if exists exp_keys;")
+}
 
 func setup() {
 	log.SetFormatter(&log.TextFormatter{
@@ -22,15 +21,16 @@ func setup() {
 	log.SetLevel(log.DebugLevel)
 
 	log.Info("test setup")
-	database.CleanUpDb(testDbName)
-	database.InitDatabase(testDbName)
+
+	database.InitDatabase("", nil)
+	cleanUpDb()
 	database.MigrateDatabase(&ExpKey{})
 }
 
 func tearDown() {
 	log.Info("test teardown")
+	cleanUpDb()
 	database.CloseDatabase()
-	database.CleanUpDb(testDbName)
 }
 
 func TestCrud(t *testing.T) {

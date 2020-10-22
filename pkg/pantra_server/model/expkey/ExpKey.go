@@ -2,7 +2,7 @@ package expkey
 
 import (
 	"fmt"
-	"github.com/dermicha/goutils/database"
+	database "github.com/dermicha/goutils/database_pg"
 	"gorm.io/gorm"
 	"time"
 )
