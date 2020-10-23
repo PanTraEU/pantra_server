@@ -31,7 +31,7 @@ func GetExpKeysByOffset(offset int, page int, size int) ([]ExpKey, error) {
 		if page >= 0 {
 
 			dbCon := database.GetDb()
-
+			dbCon.Exec("set client_encoding to 'UTF8'")
 			today := time.Now().UTC()
 			dur, _ := time.ParseDuration(fmt.Sprintf("-%dh", (offset * 24)))
 			currentDay := today.Add(dur).Format("2006-01-02")
@@ -53,9 +53,11 @@ func GetExpKeysByOffset(offset int, page int, size int) ([]ExpKey, error) {
 }
 
 func GetExpKeysByDate(dateStr string, page int, size int) ([]ExpKey, error) {
+
 	if page >= 0 {
 
 		dbCon := database.GetDb()
+		dbCon.Exec("set client_encoding to 'UTF8'")
 		date, err := time.Parse("20060102", dateStr)
 		if err != nil {
 			return nil, fmt.Errorf("invalid date: %s", dateStr)
@@ -76,12 +78,14 @@ func GetExpKeysByDate(dateStr string, page int, size int) ([]ExpKey, error) {
 
 func StoreExpKey(expkey *ExpKey) error {
 	dbCon := database.GetDb()
+	dbCon.Exec("set client_encoding to 'UTF8'")
 	dbCon.Create(&expkey)
 	return nil
 }
 
 func StoreExpKeys(expkey *[]ExpKey) error {
 	dbCon := database.GetDb()
+	dbCon.Exec("set client_encoding to 'UTF8'")
 	dbCon.Create(&expkey)
 	return nil
 }
