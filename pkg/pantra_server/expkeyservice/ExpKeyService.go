@@ -63,6 +63,7 @@ func GetExpKeysByOffset(c *fiber.Ctx) error {
 }
 
 func GetExpKeysByDate(c *fiber.Ctx, bindata bool) error {
+
 	today := time.Now().UTC()
 	currentDay := today.Format("2006-01-02")
 
@@ -80,6 +81,8 @@ func GetExpKeysByDate(c *fiber.Ctx, bindata bool) error {
 	if err != nil {
 		return err
 	}
+
+	log.Debugf("GetExpKeysByDate: %s / % d / %d", dateStr, page, size)
 
 	expKeys, err := expkey.GetExpKeysByDate(dateStr, page, size)
 	if err != nil {

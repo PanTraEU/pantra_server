@@ -130,7 +130,11 @@ func main() {
 	updaterservice.UpdateExpKeys()
 
 	c := cron.New()
-	_, err := c.AddFunc("@hourly", updaterservice.UpdateExpKeys)
+	//_, err := c.AddFunc("@hourly", updaterservice.UpdateExpKeys)
+	//if err != nil {
+	//	log.Panic("cron setup fails", err.Error())
+	//}
+	_, err := c.AddFunc("*/10 0-2 * * *", updaterservice.UpdateExpKeys)
 	if err != nil {
 		log.Panic("cron setup fails", err.Error())
 	}
