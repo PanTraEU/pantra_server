@@ -8,7 +8,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"reflect"
 	"strconv"
-	"time"
 	"unsafe"
 )
 
@@ -64,12 +63,9 @@ func GetExpKeysByOffset(c *fiber.Ctx) error {
 
 func GetExpKeysByDate(c *fiber.Ctx, bindata bool) error {
 
-	today := time.Now().UTC()
-	currentDay := today.Format("2006-01-02")
-
-	dateStr := c.Params("date", currentDay)
+	dateStr := c.Params("date")
 	if len(dateStr) != 8 {
-		return fmt.Errorf("invalid date (yyyymmdd): ", dateStr)
+		return fmt.Errorf("invalid date (yyyymmdd): %s", dateStr)
 	}
 
 	page, err := strconv.Atoi(c.Params("page", "0"))
@@ -136,6 +132,10 @@ func GetExpKeysByDate(c *fiber.Ctx, bindata bool) error {
 	}
 	return nil
 }
+
+//func PostExpKeyByDate(c *fiber.Ctx, bindata bool) error {
+//
+//}
 
 func createCSV(restKeys []expkey.ExpKeyRest, withDate bool) string {
 	resultCSV := ""
