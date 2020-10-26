@@ -10,6 +10,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 	"unsafe"
 )
 
@@ -158,12 +159,20 @@ func PostExpKeyByDate(c *fiber.Ctx, bindata bool) error {
 		log.Debugf("current auth token: %s", auth)
 	}
 
-	dateStr := c.Params("date")
-	if len(dateStr) != 8 {
-		return fmt.Errorf("invalid date (yyyymmdd): %s", dateStr)
+	data := c.Request().Body()
+	if len(data)%28 != 0 {
+		return fmt.Errorf("invalid number of bytes: %d", len(data))
 	}
 
-	log.Debugf("PostExpKeyByDate: %s ", dateStr)
+	today := time.Now().UTC()
+	cDayStr := today.Format("2006-01-02")
+	log.Debugf("PostExpKeyByDate: %s ", cDayStr)
+
+	rawKeys := [][]byte{}
+
+	for i := 0; i < len(data); i += 28 {
+		rawKeys = append(rawKeys, data[i:i+28])
+	}
 
 	err := c.SendString(fmt.Sprintf("OK: %s", auth))
 	if err != nil {
