@@ -146,6 +146,7 @@ func GetExpKeysByDate(c *fiber.Ctx, bindata bool) error {
 }
 
 func PostExpKeyByDate(c *fiber.Ctx, bindata bool) error {
+
 	auth := c.Get("Authorization")
 	if len(auth) <= 0 {
 		log.Error("missing auth token")
@@ -156,7 +157,7 @@ func PostExpKeyByDate(c *fiber.Ctx, bindata bool) error {
 		}
 	} else {
 		auth = strings.TrimSpace(strings.ToLower(auth))
-		log.Debugf("current auth token: %s", auth)
+		log.Debugf("<PostExpKeyByDate> auth token: %s", auth)
 	}
 
 	data := c.Request().Body()
@@ -166,13 +167,14 @@ func PostExpKeyByDate(c *fiber.Ctx, bindata bool) error {
 
 	today := time.Now().UTC()
 	cDayStr := today.Format("2006-01-02")
-	log.Debugf("PostExpKeyByDate: %s ", cDayStr)
+	log.Debugf("<PostExpKeyByDate> currentDay: %s ", cDayStr)
 
 	rawKeys := [][]byte{}
-
 	for i := 0; i < len(data); i += 28 {
 		rawKeys = append(rawKeys, data[i:i+28])
 	}
+
+	log.Debugf("<PostExpKeyByDate> received keys: %d", len(rawKeys))
 
 	err := c.SendString(fmt.Sprintf("OK: %s", auth))
 	if err != nil {

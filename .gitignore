@@ -94,3 +94,4 @@ bin/**
 cmd/pantra_server/docs/**
 data/**
 **.log
+*.bin
