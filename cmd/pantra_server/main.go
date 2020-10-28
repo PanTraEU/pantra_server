@@ -44,8 +44,7 @@ func setupRoutes(app *fiber.App) {
 	apiV1.Get("/expkey/:offset/:page", GetExpKeysByOffset)
 	apiV1.Get("/expkey/:offset/:page/:size", GetExpKeysByOffset)
 
-	apiV1.Post("/expkey", PostExpKeyByDate)
-	apiV1.Post("/expkey/bin", PostExpKeyByDateBin)
+	apiV1.Post("/expkey/bin", PostExpKeyBin)
 
 }
 
@@ -61,7 +60,7 @@ func setupRoutes(app *fiber.App) {
 // @Param size path int false "defines amount of ExposureKeys per request, default is 10" default(10)
 // @Success 200 {string} string
 // @Failure 404 {String} string
-// @Router /v1/expkey/{offset}/{page}/{size} [get]
+// @Router /pantraserver/api/v1/expkey/{offset}/{page}/{size} [get]
 func GetExpKeysByOffset(c *fiber.Ctx) error {
 	return expkeyservice.GetExpKeysByOffset(c)
 }
@@ -78,21 +77,40 @@ func GetExpKeysByOffset(c *fiber.Ctx) error {
 // @Param size path int false "defines amount of ExposureKeys per request, default is 10" default(10)
 // @Success 200 {string} string
 // @Failure 404 {string} string
-// @Router /v1/expkey/bydate/{date}/{page}/{size} [get]
+// @Router /pantraserver/api/v1/expkey/bydate/{date}/{page}/{size} [get]
 func GetExpKeysByDate(c *fiber.Ctx) error {
 	return expkeyservice.GetExpKeysByDate(c, false)
 }
 
+// GetExpKeysByDateBin godoc
+// @Summary access ExposureKeys by date
+// @Description access to ExposureKeys for recent 14 days
+// @ID get-expkeys-by-date-bin
+// @Tags ExpKey
+// @Accept  text/plain
+// @Produce application/octet-stream
+// @Param date path string true "day as yyyymmdd (e.g. 20201004) for which ExposureKeys are requested, vaild from today up to 13 backwards (UTC based)"
+// @Param page path int true "selects the batch of ExposureKeys for selected day, 0-n, return HTTP Status 404 if no more keys are available" minimum(0)
+// @Param size path int false "defines amount of ExposureKeys per request, default is 10" default(10)
+// @Success 200 {ExpKeys} array of exposure keys
+// @Failure 403 {string} string
+// @Router /pantraserver/api/v1/expkey/bydate/{date}/{page}/{size} [get]
 func GetExpKeysByDateBin(c *fiber.Ctx) error {
 	return expkeyservice.GetExpKeysByDate(c, true)
 }
 
-func PostExpKeyByDate(c *fiber.Ctx) error {
-	return expkeyservice.PostExpKeyByDate(c, false)
-}
-
-func PostExpKeyByDateBin(c *fiber.Ctx) error {
-	return expkeyservice.PostExpKeyByDate(c, true)
+// PostExpKeyBin godoc
+// @Summary post access ExposureKeys by date
+// @Description access to ExposureKeys for recent 14 days
+// @ID post-expkey-bin
+// @Tags ExpKey
+// @Accept application/octet-stream
+// @Produce application/octet-stream
+// @Success 200 {string} string
+// @Failure 404 {string} string
+// @Router /pantraserver/api/v1/expkey [post]
+func PostExpKeyBin(c *fiber.Ctx) error {
+	return expkeyservice.PostExpKey(c, true)
 }
 
 // @title PanTra Server API
