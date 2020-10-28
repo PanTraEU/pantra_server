@@ -147,15 +147,6 @@ func main() {
 	database_pg.GetDb().Exec("set client_encoding to 'UTF8'")
 
 	database_pg.MigrateDatabase(&expkey.ExpKey{})
-	database_pg.GetDb().Exec("CREATE  UNIQUE INDEX exp_keys_exp_key on exp_keys (exp_key);")
-
-	//database.GetDb().Exec(
-	//	"pragma main.journal_mode=MEMORY;" +
-	//		"pragma main.TEMP_STORE=2;" +
-	//		"pragma main.cache_size=-4000;" +
-	//		"pragma main.SYNCHRONOUS=1;" +
-	//		"pragma main.LOCKING_MODE=EXCLUSIVE;",
-	//)
 
 	updaterservice.UpdateExpKeys()
 

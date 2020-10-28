@@ -15,7 +15,7 @@ const (
 type ExpKey struct {
 	gorm.Model
 	Day                        string `gorm:"column:day"`
-	ExpKey                     string `gorm:"column:exp_key" gorm:"unique"`
+	ExpKey                     string `gorm:"index:idx_expkeys,unique,column:exp_key"`
 	RollingStartIntervalNumber int32  `gorm:"column:interval_number"`
 	RollingPeriod              int32  `gorm:"column:rolling_period"`
 	DaysSinceOnsetOfSymptoms   int32  `gorm:"column:days_since"`
