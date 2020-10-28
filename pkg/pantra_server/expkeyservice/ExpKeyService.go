@@ -157,6 +157,7 @@ func PostExpKey(c *fiber.Ctx) error {
 			log.Errorf("PostExpKey: %s", err.Error())
 			return err
 		}
+		return nil
 	} else {
 		auth = strings.TrimSpace(strings.ToLower(auth))
 		log.Debugf("<PostExpKey> auth token: %s", auth)
@@ -166,6 +167,7 @@ func PostExpKey(c *fiber.Ctx) error {
 				log.Errorf("PostExpKey: %s", err.Error())
 				return err
 			}
+			return nil
 		}
 	}
 
@@ -198,7 +200,7 @@ func PostExpKey(c *fiber.Ctx) error {
 
 	log.Debugf("<PostExpKey> received keys: %d", len(rawKeys))
 
-	err := c.SendString(fmt.Sprintf("OK: %s", auth))
+	err := c.SendString(fmt.Sprintf("OK, added keys %d", len(rawKeys)))
 	if err != nil {
 		log.Errorf("PostExpKey: %s", err.Error())
 		return err
