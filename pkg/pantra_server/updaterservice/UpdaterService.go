@@ -50,6 +50,8 @@ func UpdateExpKeys() {
 					} else {
 						ek.DaysSinceOnsetOfSymptoms = 0
 					}
+					ek.KeyProvider = expkey.KEYPROVIDER_RKI
+
 					expKeys = append(expKeys, *ek)
 
 					if len(expKeys) >= config.InsertBatchSize {

@@ -7,13 +7,19 @@ import (
 	"time"
 )
 
+const (
+	KEYPROVIDER_RKI    = "kp_rki"
+	KEYPROVIDER_PANTRA = "kp_pantra"
+)
+
 type ExpKey struct {
 	gorm.Model
 	Day                        string `gorm:"column:day"`
-	ExpKey                     string `gorm:"column:exp_key" gorm:"uniqueIndex"`
+	ExpKey                     string `gorm:"column:exp_key" gorm:"unique"`
 	RollingStartIntervalNumber int32  `gorm:"column:interval_number"`
 	RollingPeriod              int32  `gorm:"column:rolling_period"`
 	DaysSinceOnsetOfSymptoms   int32  `gorm:"column:days_since"`
+	KeyProvider                string `gorm:"column:key_provider"`
 	//TransmissionRiskLevel      int32  `gorm:"column:transmission_risk_level"`
 }
 

@@ -20,6 +20,7 @@ type Configuration struct {
 	DataPath        string `json:"data_path"`
 	DbDSN           string `json:"db_dsn"`
 	InsertBatchSize int    `json:"insert_batch_size"`
+	AccessToken     string `json:"access_token"`
 }
 
 func getConfFile() (string, error) {

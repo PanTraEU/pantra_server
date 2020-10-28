@@ -110,7 +110,7 @@ func GetExpKeysByDateBin(c *fiber.Ctx) error {
 // @Failure 404 {string} string
 // @Router /pantraserver/api/v1/expkey [post]
 func PostExpKeyBin(c *fiber.Ctx) error {
-	return expkeyservice.PostExpKey(c, true)
+	return expkeyservice.PostExpKey(c)
 }
 
 // @title PanTra Server API
@@ -147,6 +147,7 @@ func main() {
 	database_pg.GetDb().Exec("set client_encoding to 'UTF8'")
 
 	database_pg.MigrateDatabase(&expkey.ExpKey{})
+	database_pg.GetDb().Exec("CREATE  UNIQUE INDEX exp_keys_exp_key on exp_keys (exp_key);")
 
 	//database.GetDb().Exec(
 	//	"pragma main.journal_mode=MEMORY;" +

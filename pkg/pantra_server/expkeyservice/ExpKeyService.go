@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
+	configUtil "github.com/pantraeu/pantra_server/pkg/pantra_server/confutil"
 	expkey "github.com/pantraeu/pantra_server/pkg/pantra_server/model/expkey"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -145,7 +146,8 @@ func GetExpKeysByDate(c *fiber.Ctx, bindata bool) error {
 	return nil
 }
 
-func PostExpKey(c *fiber.Ctx, bindata bool) error {
+func PostExpKey(c *fiber.Ctx) error {
+	config := configUtil.GetConfig()
 
 	auth := c.Get("Authorization")
 	if len(auth) <= 0 {
@@ -158,6 +160,13 @@ func PostExpKey(c *fiber.Ctx, bindata bool) error {
 	} else {
 		auth = strings.TrimSpace(strings.ToLower(auth))
 		log.Debugf("<PostExpKey> auth token: %s", auth)
+		if auth != config.AccessToken {
+			err := c.SendStatus(http.StatusForbidden)
+			if err != nil {
+				log.Errorf("PostExpKey: %s", err.Error())
+				return err
+			}
+		}
 	}
 
 	data := c.Request().Body()
@@ -171,7 +180,20 @@ func PostExpKey(c *fiber.Ctx, bindata bool) error {
 
 	rawKeys := [][]byte{}
 	for i := 0; i < len(data); i += 28 {
-		rawKeys = append(rawKeys, data[i:i+28])
+		rawKey := data[i : i+28]
+		rawKeys = append(rawKeys, rawKey)
+		expK := expkey.ExpKey{}
+		key := base64.StdEncoding.EncodeToString(rawKey[0:16])
+		expK.Day = cDayStr
+		expK.ExpKey = key
+		expK.RollingStartIntervalNumber = int32(rawKey[19])<<24 | int32(rawKey[18])<<16 | int32(rawKey[17])<<8 | int32(rawKey[16])
+		expK.RollingPeriod = int32(rawKey[23])<<24 | int32(rawKey[22])<<16 | int32(rawKey[21])<<8 | int32(rawKey[20])
+		expK.DaysSinceOnsetOfSymptoms = int32(rawKey[27])<<24 | int32(rawKey[26])<<16 | int32(rawKey[25])<<8 | int32(rawKey[24])
+		expK.KeyProvider = expkey.KEYPROVIDER_PANTRA
+		err := expkey.StoreExpKey(&expK)
+		if err != nil {
+			return fmt.Errorf("storing ExpKey failed for day: %s", cDayStr)
+		}
 	}
 
 	log.Debugf("<PostExpKey> received keys: %d", len(rawKeys))
