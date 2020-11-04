@@ -98,9 +98,13 @@ func GetExpKeysByDate(c *fiber.Ctx, bindata bool) error {
 	if len(expKeys) == 0 {
 		log.Error("GetAllExpKeysByDate: no more keys available")
 
-		err := c.SendStatus(404)
-		if err != nil {
-			log.Errorf("GetAllExpKeysByDate: %s", err.Error())
+		if page == 0 {
+			err := c.SendStatus(http.StatusNotFound)
+			log.Errorf("GetAllExpKeysByDate (no keys): %s", err.Error())
+			return err
+		} else {
+			err := c.SendStatus(http.StatusNoContent)
+			log.Errorf("GetAllExpKeysByDate (no more keys): %s", err.Error())
 			return err
 		}
 	} else {
