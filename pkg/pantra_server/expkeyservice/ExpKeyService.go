@@ -77,30 +77,30 @@ func GetExpKeysByDate(c *fiber.Ctx, bindata bool) error {
 
 	page, err := strconv.Atoi(c.Params("page", "0"))
 	if err != nil {
-		log.Errorf("GetExpKeysByDate: %s", err.Error())
+		log.Errorf("GetAllExpKeysByDate: %s", err.Error())
 		return err
 	}
 
 	size, err := strconv.Atoi(c.Params("size", "10"))
 	if err != nil {
-		log.Errorf("GetExpKeysByDate: %s", err.Error())
+		log.Errorf("GetAllExpKeysByDate: %s", err.Error())
 		return err
 	}
 
-	log.Debugf("GetExpKeysByDate: %s / % d / %d", dateStr, page, size)
+	log.Debugf("GetAllExpKeysByDate: %s / % d / %d", dateStr, page, size)
 
-	expKeys, err := expkey.GetExpKeysByDate(dateStr, page, size)
+	expKeys, err := expkey.GetAllExpKeysByDate(dateStr, page, size)
 	if err != nil {
-		log.Errorf("GetExpKeysByDate: %s", err.Error())
+		log.Errorf("GetAllExpKeysByDate: %s", err.Error())
 		return err
 	}
 
 	if len(expKeys) == 0 {
-		log.Error("GetExpKeysByDate: no more keys available")
+		log.Error("GetAllExpKeysByDate: no more keys available")
 
 		err := c.SendStatus(404)
 		if err != nil {
-			log.Errorf("GetExpKeysByDate: %s", err.Error())
+			log.Errorf("GetAllExpKeysByDate: %s", err.Error())
 			return err
 		}
 	} else {
@@ -131,13 +131,13 @@ func GetExpKeysByDate(c *fiber.Ctx, bindata bool) error {
 			}
 			err := c.Send(byteData)
 			if err != nil {
-				log.Errorf("GetExpKeysByDate: %s", err.Error())
+				log.Errorf("GetAllExpKeysByDate: %s", err.Error())
 				return err
 			}
 		} else {
 			err := c.SendString(createCSV(restKeys, false))
 			if err != nil {
-				log.Errorf("GetExpKeysByDate: %s", err.Error())
+				log.Errorf("GetAllExpKeysByDate: %s", err.Error())
 				return err
 			}
 		}

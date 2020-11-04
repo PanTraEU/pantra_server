@@ -23,7 +23,7 @@ func UpdateExpKeys() {
 			//toT := time.Unix(int64(*keys.EndTimestamp), 0)
 			cDayStr := fromT.Format("2006-01-02")
 			cDayShortStr := fromT.Format("20060102")
-			curKeys, err := expkey.GetExpKeysByDate(cDayShortStr, 0, 1)
+			curKeys, err := expkey.GetExpKeysByDateByProvider(cDayShortStr, expkey.KEYPROVIDER_RKI, 0, 1)
 			if err != nil || len(curKeys) == 0 {
 				log.Infof("add %d keys for day: %s", len(keys.Keys), cDayStr)
 				expKeys := make([]expkey.ExpKey, 0)

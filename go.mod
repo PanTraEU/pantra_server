@@ -9,7 +9,7 @@ require (
 	github.com/dermicha/goutils v0.0.6
 	github.com/go-openapi/spec v0.19.9 // indirect
 	github.com/go-openapi/swag v0.19.9 // indirect
-	github.com/gofiber/fiber/v2 v2.0.5
+	github.com/gofiber/fiber/v2 v2.1.2
 	github.com/golang/protobuf v1.4.2
 	github.com/google/exposure-notifications-server v0.12.1 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
