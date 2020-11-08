@@ -3,5 +3,5 @@
   "data_path": "./data",
   "db_dsn": "user=postgres dbname=pantra_server host=localhost port=5432 sslmode=disable TimeZone=Europe/Paris",
   "insert_batch_size": 2000,
-  "access_token": "986068c49e4dcf5af114c4af73b694186392c438fa0b0f498c81e647f5d1d987"
+  "access_token": "7c378a8088d9442020eb"
 }

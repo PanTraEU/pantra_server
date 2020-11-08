@@ -17,6 +17,10 @@ import (
 
 const BYTES_IN_INT32 = 4
 
+var (
+	config = configUtil.GetConfig()
+)
+
 func unsafeCaseInt32ToBytes(val int32) []byte {
 	hdr := reflect.SliceHeader{Data: uintptr(unsafe.Pointer(&val)), Len: BYTES_IN_INT32, Cap: BYTES_IN_INT32}
 	return *(*[]byte)(unsafe.Pointer(&hdr))
@@ -152,8 +156,7 @@ func GetExpKeysByDate(c *fiber.Ctx, bindata bool) error {
 }
 
 func PostExpKey(c *fiber.Ctx) error {
-	config := configUtil.GetConfig()
-
+	log.Info("PostExpKey")
 	auth := c.Get("Authorization")
 	if len(auth) <= 0 {
 		log.Error("missing auth token")
@@ -166,7 +169,7 @@ func PostExpKey(c *fiber.Ctx) error {
 	} else {
 		auth = strings.TrimSpace(strings.ToLower(auth))
 		log.Debugf("<PostExpKey> auth token: %s", auth)
-		if auth != config.AccessToken {
+		if auth != config.AccessToken || len(auth) != 10 {
 			err := c.SendStatus(http.StatusForbidden)
 			if err != nil {
 				log.Errorf("PostExpKey: %s", err.Error())
