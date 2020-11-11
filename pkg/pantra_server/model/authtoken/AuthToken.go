@@ -9,18 +9,18 @@ import (
 	"gorm.io/gorm"
 )
 
-type AutToken struct {
+type AuthToken struct {
 	gorm.Model
 	AuthToken    string `gorm:"index:idx_authtoken,unique,column:auth_token"`
 	ValidState   bool   `gorm:"column:valid_state"`
 	UserAssigned bool   `gorm:"column:user_assigned"`
-	Permament    bool   `gorm:"column:permament"`
+	Permanent    bool   `gorm:"column:permanent"`
 }
 
 func IsValidToken(token string) (bool, error) {
 	db := database.GetDb()
 
-	ats := []AutToken{}
+	ats := []AuthToken{}
 
 	db.Limit(1).
 		Where("auth_token = ?", token).
@@ -44,7 +44,7 @@ func MarkUsed(token string) (bool, error) {
 	if err != nil {
 		return false, err
 	} else {
-		ats := []AutToken{}
+		ats := []AuthToken{}
 
 		db.Limit(1).
 			Where("auth_token = ?", token).
@@ -55,7 +55,7 @@ func MarkUsed(token string) (bool, error) {
 		if len(ats) == 1 {
 			at := ats[0]
 
-			if !at.Permament {
+			if !at.Permanent {
 				at.ValidState = false
 				db.Save(at)
 			}
@@ -71,7 +71,7 @@ func MarkUsed(token string) (bool, error) {
 func PopToken() (string, error) {
 	db := database.GetDb()
 
-	ats := []AutToken{}
+	ats := []AuthToken{}
 
 	db.Limit(1).
 		Where("valid_state = ?", true).
@@ -95,14 +95,14 @@ func PopToken() (string, error) {
 func Generate(n int) error {
 
 	for i := 0; i < n; i++ {
-		at := AutToken{}
+		at := AuthToken{}
 		uid, _ := uuid.NewV4()
 		rndStr := base64.StdEncoding.EncodeToString(uid.Bytes())[0:10]
 
 		at.AuthToken = rndStr
 		at.ValidState = true
 		at.UserAssigned = false
-		at.Permament = false
+		at.Permanent = false
 
 		database.GetDb().Create(&at)
 	}

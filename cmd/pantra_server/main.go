@@ -159,7 +159,7 @@ func main() {
 	database_pg.GetDb().Exec("set client_encoding to 'UTF8'")
 
 	database_pg.MigrateDatabase(&expkey.ExpKey{})
-	database_pg.MigrateDatabase(&authtoken.AutToken{})
+	database_pg.MigrateDatabase(&authtoken.AuthToken{})
 
 	updaterservice.UpdateExpKeys()
 
