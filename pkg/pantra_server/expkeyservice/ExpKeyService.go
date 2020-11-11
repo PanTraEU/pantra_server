@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	configUtil "github.com/pantraeu/pantra_server/pkg/pantra_server/confutil"
+	"github.com/pantraeu/pantra_server/pkg/pantra_server/model/authtoken"
 	expkey "github.com/pantraeu/pantra_server/pkg/pantra_server/model/expkey"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -157,7 +158,7 @@ func GetExpKeysByDate(c *fiber.Ctx, bindata bool) error {
 
 func PostExpKey(c *fiber.Ctx) error {
 	log.Info("PostExpKey")
-	auth := c.Get("Authorization")
+	auth := strings.TrimSpace(c.Get("Authorization"))
 	if len(auth) <= 0 {
 		log.Error("missing auth token")
 		err := c.SendStatus(http.StatusForbidden)
@@ -167,15 +168,12 @@ func PostExpKey(c *fiber.Ctx) error {
 		}
 		return nil
 	} else {
-		auth = strings.TrimSpace(strings.ToLower(auth))
 		log.Debugf("<PostExpKey> auth token: %s", auth)
-		if auth != config.AccessToken || len(auth) != 10 {
-			err := c.SendStatus(http.StatusForbidden)
-			if err != nil {
-				log.Errorf("PostExpKey: %s", err.Error())
-				return err
-			}
-			return nil
+		_, err := authtoken.IsValidToken(auth)
+		if err != nil {
+			err := fmt.Errorf("invalid token: %s", auth)
+			log.Errorf(err.Error())
+			return err
 		}
 	}
 
@@ -208,11 +206,63 @@ func PostExpKey(c *fiber.Ctx) error {
 
 	log.Debugf("<PostExpKey> received keys: %d", len(rawKeys))
 
-	err := c.SendString(fmt.Sprintf("OK, added keys %d", len(rawKeys)))
+	_, err := authtoken.MarkUsed(auth)
 	if err != nil {
-		log.Errorf("PostExpKey: %s", err.Error())
+		log.Error(err.Error())
+		c.SendStatus(http.StatusInternalServerError)
 		return err
 	} else {
+		err = c.SendString(fmt.Sprintf("OK, added keys %d", len(rawKeys)))
+		if err != nil {
+			log.Errorf("PostExpKey: %s", err.Error())
+			return err
+		} else {
+			return nil
+		}
+	}
+}
+
+func GenerateTokens(c *fiber.Ctx) error {
+	log.Info("GenerateTokens")
+	nStr := c.Params("n")
+	n, err := strconv.Atoi(nStr)
+	if err == nil {
+		authtoken.Generate(n)
+		c.SendStatus(http.StatusOK)
+		return nil
+	} else {
+		err := fmt.Errorf("invalid paramter: %s", nStr)
+		log.Error(err.Error())
+		return err
+	}
+}
+
+func PopToken(c *fiber.Ctx) error {
+	log.Info("popToken")
+
+	auth := strings.TrimSpace(c.Get("Authorization"))
+	if len(auth) <= 0 {
+		log.Error("missing auth token")
+		err := c.SendStatus(http.StatusForbidden)
+		if err != nil {
+			log.Errorf("<PopToken> %s", err.Error())
+			return err
+		}
+		return nil
+	} else {
+		log.Debugf("<PopToken> auth token: %s", auth)
+		if config.AccessToken != auth {
+			err := fmt.Errorf("invalid token: %s", auth)
+			log.Errorf(err.Error())
+			return err
+		}
+	}
+
+	token, err := authtoken.PopToken()
+	if err != nil {
+		return err
+	} else {
+		c.SendString(token)
 		return nil
 	}
 }

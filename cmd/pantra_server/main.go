@@ -8,6 +8,7 @@ import (
 	_ "github.com/pantraeu/pantra_server/cmd/pantra_server/docs"
 	configUtil "github.com/pantraeu/pantra_server/pkg/pantra_server/confutil"
 	"github.com/pantraeu/pantra_server/pkg/pantra_server/expkeyservice"
+	"github.com/pantraeu/pantra_server/pkg/pantra_server/model/authtoken"
 	expkey "github.com/pantraeu/pantra_server/pkg/pantra_server/model/expkey"
 	"github.com/pantraeu/pantra_server/pkg/pantra_server/updaterservice"
 	"github.com/robfig/cron/v3"
@@ -45,6 +46,9 @@ func setupRoutes(app *fiber.App) {
 	apiV1.Get("/expkey/:offset/:page/:size", GetExpKeysByOffset)
 
 	apiV1.Post("/expkey/bin", PostExpKeyBin)
+
+	apiV1.Get("/token/gen/:n", GenerateTokens)
+	apiV1.Get("/token/pop", PopToken)
 
 }
 
@@ -113,6 +117,14 @@ func PostExpKeyBin(c *fiber.Ctx) error {
 	return expkeyservice.PostExpKey(c)
 }
 
+func GenerateTokens(c *fiber.Ctx) error {
+	return expkeyservice.GenerateTokens(c)
+}
+
+func PopToken(c *fiber.Ctx) error {
+	return expkeyservice.PopToken(c)
+}
+
 // @title PanTra Server API
 // @version 0.1
 // @description Swagger API docs
@@ -147,6 +159,7 @@ func main() {
 	database_pg.GetDb().Exec("set client_encoding to 'UTF8'")
 
 	database_pg.MigrateDatabase(&expkey.ExpKey{})
+	database_pg.MigrateDatabase(&authtoken.AutToken{})
 
 	updaterservice.UpdateExpKeys()
 

@@ -10,6 +10,7 @@ require (
 	github.com/go-openapi/spec v0.19.9 // indirect
 	github.com/go-openapi/swag v0.19.9 // indirect
 	github.com/gofiber/fiber/v2 v2.1.2
+	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/golang/protobuf v1.4.2
 	github.com/google/exposure-notifications-server v0.12.1 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
