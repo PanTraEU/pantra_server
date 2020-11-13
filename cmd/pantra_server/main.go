@@ -46,6 +46,7 @@ func setupRoutes(app *fiber.App) {
 	apiV1.Get("/expkey/:offset/:page/:size", GetExpKeysByOffset)
 
 	apiV1.Post("/expkey/bin", PostExpKeyBin)
+	apiV1.Post("/expkey", PostExpKeyBin)
 
 	apiV1.Get("/token/gen/:n", GenerateTokens)
 	apiV1.Get("/token/pop", PopToken)
