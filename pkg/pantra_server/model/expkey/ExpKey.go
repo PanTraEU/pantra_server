@@ -47,7 +47,7 @@ func GetExpKeysByOffset(offset int, page int, size int) ([]ExpKey, error) {
 				Limit(size).
 				Offset(page*size).
 				Where("Day = ?", currentDay).
-				Order("exp_key asc").
+				Order("rolling_start_interval_number asc").
 				Find(&expKeys)
 			return expKeys, nil
 		} else {
